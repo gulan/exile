@@ -1,0 +1,118 @@
+#!/usr/bin/env python
+
+"""
+names
+-----
+droot -- dev root, my ~/1
+pdir -- a project dir, like flashy
+fdir -- a "foreign" dir, which is a candidate for exile. (build, dist)
+xroot -- the parallel to droot: ~/1.exile. Actually, xroot should be whatever ~/1/.exile resolves to.
+
+The user visits a project file.
+
+  cd droot/dog
+
+He sees a 'build' directory, which has generated code. He want to keep
+the projects under droot 'pure', which mean they contain only source
+code that he wrote. That mean build need to be exiled.
+
+  exile build
+
+The result is that build is now a symlink to the build directory which
+now resides in ~/droot/.exile/dog/
+
+  ls -ld ~/droot/dog/build
+    ~/droot/dog/build -> ~/droot/.exile/dog/build
+
+The dir ~/droot/.exile/dog/ was created by the script, if it did not
+already exist.
+
+Additional directories may be exiled:
+
+  exile other_peoples_code
+
+If the user decide that a directory was exiled by mistake, he can
+'pardon' it.
+
+  pardon build
+
+Pardon is the inverse (undo) of build. The result is that build is
+again a local directory, and there is no entry longer a
+~/droot/.exile/dog/build.
+"""
+
+import argparse
+from collections import namedtuple
+import os
+import shutil
+import sys
+
+Status = namedtuple("Status","status rc errmsg")
+
+def trim(name):
+    if name.startswith('./'): 
+        name = name[2:]
+    if name.endswith('/'):
+        name = name[:-1]
+    return name
+
+def exile(args):
+    """
+    * check args.source is a local directory
+    * find ancestor directory .exile
+    * resolve args.source's parent dir (pdir) to a simple name
+    * ensure that the dir .exile/$dir exists
+    * move args.source to .exile/$dir/
+    * symlink .exile/$dir/args.source to args.source
+    """
+    source = trim(args.source)
+
+    def check_source(path):
+        if os.path.sep in path:
+            return Status(False, 19, 'source must be a local directory')
+        if not os.path.exists(path):
+            return Status(False, 18, 'source not found')
+        if os.path.islink(path):
+            return Status(False, 17, 'source may not be a symbolic link')
+        if not os.path.isdir(path):
+            return Status(False, 16, 'source must be a local directory')
+        return Status(True,0,'')
+
+    check = check_source(source)
+    if not check.status:
+        print >>sys.stderr,check.errmsg
+        return check.rc
+
+    def find_exile():
+        path = os.getcwd()
+        while path != '/': # search towards fs root
+            location = os.path.join(path,'.exile')
+            if os.path.exists(location):
+                return location # found
+            path = os.path.split(path)[0]
+        return '' # fail
+
+    exile_path = find_exile()
+    if not exile_path:
+        print >>sys.stderr,'no .exile/ directory found.'
+        return 49
+
+    parent_name = os.path.basename(os.getcwd())
+    new_home = os.path.join(exile_path,parent_name)
+    if not os.path.exists(new_home):
+        os.mkdir(new_home)
+    target = os.path.join(new_home,source)
+
+    shutil.move(source,target)
+    os.symlink(target,source)
+
+    return 0
+
+if __name__ == '__main__':
+    p = argparse.ArgumentParser(description='Exile the named directory')
+    p.add_argument('source',help='directory to exile')
+    p.set_defaults(func=exile)
+    args = p.parse_args()
+    sys.exit(args.func(args))
+
+    

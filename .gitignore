@@ -1,0 +1,6 @@
+*.pyc
+*~
+my.*
+build
+dist
+2

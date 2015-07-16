@@ -1,0 +1,63 @@
+Move and Symlink Directories
+----------------------------
+I like to keep all of my programming projects under a single
+directory. Each project gets its own sub-directory. The arrangement
+gives me just one place to look for code that I wrote.
+
+I really want my projects to have just my code, and no code written by
+someone else. But some tools assume otherwise. Virtualenv for Python
+is one example. After running `virtualenv PY27`, I have something
+like::
+
+  ~/projects/my-project/
+     PY27/
+     README
+     setup.py
+     ...
+
+But now `pip` install will 'pollute' my project with a bunch of code
+that I didn't write. My own gdg tool is also a source of pollution.
+
+The solution is simple for any UNIX-like system: use symbolic links.
+
+Under the `~/projects` directory is a folder called `.exile`. The
+directories in `.exile` have the same name as the directories under
+projects, excepting `.exile` itself.::
+
+  ~/projects/
+       a-proj/
+       b-proj/
+       c-proj/
+       .exile/
+           a-proj/
+           b-proj/
+           c-proj/
+
+Say I want to exile directory `~/projects/a-proj/PY27`::
+
+  cd ~/projects/
+  exile PY27
+
+The result is::
+
+  ~/projects/
+       a-proj/PY27 --> ~/projects/.exile/PY27   # symbolic link
+       b-proj/
+       c-proj/
+       .exile/
+           a-proj/PY27/
+           b-proj/
+           c-proj/
+
+The exile command will look for the first parent directory that
+contains a .exile sub-directory. The command will create the
+.exile/a-proj/ directory, if it does not exist. It will then move the
+PY27 directory and make a symlink to it.
+
+The 'pardon' command is the logical inverse of exile. It will move the
+exile directory back to its original location. The sequence::
+
+  exile PY27 ; pardon PY27
+
+has no net effect, except it may leave an empty `.exile/a-proj`
+directory that did not previously exist. That seems harmless.

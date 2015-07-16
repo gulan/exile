@@ -1,0 +1,99 @@
+#!/usr/bin/env python
+
+"""
+names
+-----
+droot -- dev root, my ~/1
+pdir -- a project dir, like flashy
+fdir -- a "foreign" dir, which is a candidate for exile. (build, dist)
+xroot -- the parallel to droot: ~/1.exile. Actually, xroot should be whatever ~/1/.exile resolves to.
+
+The user visits a project file.
+
+  cd droot/dog
+
+He sees a 'build' directory, which has generated code. He want to keep
+the projects under droot 'pure', which mean they contain only source
+code that he wrote. That mean build need to be exiled.
+
+  exile build
+
+The result is that build is now a symlink to the build directory which
+now resides in ~/droot/.exile/dog/
+
+  ls -ld ~/droot/dog/build
+    ~/droot/dog/build -> ~/droot/.exile/dog/build
+
+The dir ~/droot/.exile/dog/ was created by the script, if it did not
+already exist.
+
+Additional directories may be exiled:
+
+  exile other_peoples_code
+
+If the user decide that a directory was exiled by mistake, he can
+'pardon' it.
+
+  pardon build
+
+Pardon is the inverse (undo) of build. The result is that build is
+again a local directory, and there is no entry longer a
+~/droot/.exile/dog/build.
+"""
+
+import argparse
+from collections import namedtuple
+import os
+import shutil
+import sys
+
+Status = namedtuple("Status","status rc errmsg")
+
+def trim(name):
+    if name.startswith('./'): 
+        name = name[2:]
+    if name.endswith('/'):
+        name = name[:-1]
+    return name
+
+def pardon(args):
+    "Restore the exiled directory."
+    # pre-conditions:
+    # * linkname is a basename
+    # * linkname is a symlink in the current directory
+    # * linkname really point to a directory in the proper exile directory
+    # * user has permissions move all files in the exiled directory
+    linkname = trim(args.linkname)
+
+    def check_linkname(linkname):
+        if not os.path.exists(linkname):
+            return Status(False, 37, 'real directory not found')
+        if not os.path.islink(linkname):
+            return Status(False, 38 ,'linkname must be a symbolic link')
+        data = trim(os.readlink(linkname))
+        if linkname != os.path.basename(data):
+            return Status(False, 39,'linkname is not the basename form of the exiled directory')
+        return Status(True,0,'')
+
+    check = check_linkname(linkname)
+    if not check.status:
+        print >>sys.stderr,check.errmsg
+        return check.rc
+        
+    data = trim(os.readlink(linkname))
+
+    os.remove(linkname)
+    shutil.move(data,linkname)
+    return 0
+
+
+if __name__ == '__main__':
+    p = argparse.ArgumentParser(description='Bring back exiled directory')
+    p.add_argument('linkname',
+                   help=('basename of directory to restore, ' +
+                         'which is also the name of the symlink to it.'))
+    p.set_defaults(func=pardon)
+    args = p.parse_args()
+    sys.exit(args.func(args))
+
+    
