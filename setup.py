@@ -5,7 +5,7 @@ from distutils.core import setup
 
 NAME = "exile"
 DESCRIPTION = "Move and Symlink directories"
-VERSION = "0.0.1"
+VERSION = "0.0.2"
 AUTHOR = "gulan"
 AUTHOR_EMAIL = "glen.wilder@gmail.com"
 

@@ -14,7 +14,7 @@ The user visits a project file.
 
 He sees a 'build' directory, which has generated code. He want to keep
 the projects under droot 'pure', which mean they contain only source
-code that he wrote. That mean build need to be exiled.
+code that he wrote. That means build needs to be 'exiled'.
 
   exile build
 
@@ -31,7 +31,7 @@ Additional directories may be exiled:
 
   exile other_peoples_code
 
-If the user decide that a directory was exiled by mistake, he can
+If the user decides that a directory was exiled by mistake, he can
 'pardon' it.
 
   pardon build
