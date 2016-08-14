@@ -4,8 +4,8 @@ import sys
 from distutils.core import setup
 
 NAME = "exile"
-DESCRIPTION = "Move and Symlink directories"
-VERSION = "0.0.2"
+DESCRIPTION = "Replace a directory with a symlink to a copy of it."
+VERSION = "0.0.3"
 AUTHOR = "gulan"
 AUTHOR_EMAIL = "glen.wilder@gmail.com"
 

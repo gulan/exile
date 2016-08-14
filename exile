@@ -3,28 +3,26 @@
 """
 names
 -----
-droot -- dev root, my ~/1
-pdir -- a project dir, like flashy
-fdir -- a "foreign" dir, which is a candidate for exile. (build, dist)
-xroot -- the parallel to droot: ~/1.exile. Actually, xroot should be whatever ~/1/.exile resolves to.
+my_projects -- dev root, my ~/1
+bluesky -- the root directory of the bluesky project
 
-The user visits a project file.
+The user visits a project:
 
-  cd droot/dog
+  $ cd my_projects/bluesky
 
-He sees a 'build' directory, which has generated code. He want to keep
-the projects under droot 'pure', which mean they contain only source
-code that he wrote. That means build needs to be 'exiled'.
+He sees a build directory, which has only generated code. He wants to keep
+the projects under my_projects 'pure', which means they contain only source
+code that he wrote. That can be done by 'exiling' the directory:
 
-  exile build
+  $ exile build
 
-The result is that build is now a symlink to the build directory which
-now resides in ~/droot/.exile/dog/
+The result is that the build is now a symlink to the original build
+directory, which now resides in ~/my_projects/.exile/bluesky/
 
-  ls -ld ~/droot/dog/build
-    ~/droot/dog/build -> ~/droot/.exile/dog/build
+  $ ls -ld ~/my_projects/bluesky/build
+    ~/my_projects/bluesky/build -> ~/my_projects/.exile/bluesky/build
 
-The dir ~/droot/.exile/dog/ was created by the script, if it did not
+The dir ~/my_projects/.exile/bluesky/ was created by the script, if it did not
 already exist.
 
 Additional directories may be exiled:
@@ -36,9 +34,9 @@ If the user decides that a directory was exiled by mistake, he can
 
   pardon build
 
-Pardon is the inverse (undo) of build. The result is that build is
-again a local directory, and there is no entry longer a
-~/droot/.exile/dog/build.
+Pardon is the inverse (undo) of exile. The result is that the build
+directory is again local, and there is no longer an entry
+`~/my_projects/.exile/bluesky/build`.
 """
 
 import argparse
@@ -60,7 +58,7 @@ def exile(args):
     """
     * check args.source is a local directory
     * find ancestor directory .exile
-    * resolve args.source's parent dir (pdir) to a simple name
+    * resolve args.source's parent dir to a simple name
     * ensure that the dir .exile/$dir exists
     * move args.source to .exile/$dir/
     * symlink .exile/$dir/args.source to args.source

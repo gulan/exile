@@ -5,3 +5,11 @@
 * tests
 * redesign with a fs model 
 * check for multiple links, which could happen after a dir copy
+
+08/14/2016 Goals
+----------------
+Upgrade to a professional quality project with code on pypi.
+
+0.0.3
+-----
+Improve documentation language.

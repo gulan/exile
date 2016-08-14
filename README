@@ -16,13 +16,14 @@ like::
      ...
 
 But now `pip` install will 'pollute' my project with a bunch of code
-that I didn't write. My own gdg tool is also a source of pollution.
+that I did not write. My own gdg tool is also a source of pollution as
+it makes many backup file copies.
 
 The solution is simple for any UNIX-like system: use symbolic links.
 
-Under the `~/projects` directory is a folder called `.exile`. The
+Under the `~/projects` directory is a special directory called `.exile`. The
 directories in `.exile` have the same name as the directories under
-projects, excepting `.exile` itself.::
+projects, excepting `.exile` itself::
 
   ~/projects/
        a-proj/
