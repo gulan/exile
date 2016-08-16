@@ -42,6 +42,7 @@ class TestAction(unittest.TestCase):
         p = ps[1] # choose a project
         cs = exile_utils.candidates(r, p)
         c = cs[1] # choose a candidate
+
         os.chdir(os.path.join(r, p)) # exile is run within a project dir
         rc = subprocess.call(['exile', c])
         self.assertEqual(rc, 0)
@@ -50,10 +51,13 @@ class TestAction(unittest.TestCase):
         fs = exile_utils.folders(r, p)
         self.assertEqual(c in fs, True)
         self.assertEqual(c not in exile_utils.candidates(r, p), True)
-        
+
         rc = subprocess.call(['pardon', c]) # undo exile
         self.assertEqual(rc, 0)
-        self.assertEqual(exile_utils.check(r)[0], True)
+        # print "project>", p
+        # subprocess.call(['tree', exile_utils.dot_exile(r)])
+        ck = exile_utils.check(r)
+        self.assertEqual(ck, (True, ''), ck[1])
         fs = exile_utils.folders(r, p)
         self.assertEqual(c not in fs, True)
         self.assertEqual(c in exile_utils.candidates(r, p), True)

@@ -40,10 +40,18 @@ def pardon(args):
         print >>sys.stderr,check.errmsg
         return check.rc
         
-    data = trim(os.readlink(linkname))
-
+    exiled_folder_path = trim(os.readlink(linkname))
+    
     os.remove(linkname)
-    shutil.move(data,linkname)
+    shutil.move(exiled_folder_path,linkname)
+
+    # remove exiled project folder if empty
+    project_path = os.path.dirname(exiled_folder_path)
+    dot_exile = os.path.dirname(project_path)
+    assert os.path.basename(dot_exile) == '.exile', ("path error: %r" % dot_exile)
+    if os.listdir(project_path) == []:
+        os.rmdir(project_path)
+        
     return 0
 
 

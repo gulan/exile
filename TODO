@@ -37,3 +37,13 @@ The general testing scheme for a test is
     * check the result
     * cleanup
 
+0.0.5
+-----
+Fix bug: empty .exile/project directory not removed
+
+This wasn't really a bug before, as I designed the code to leave the
+empty directory. I have since changed my mind. Now the empty directory
+raises an error in the testsuite.
+
+
+

@@ -5,7 +5,7 @@ from distutils.core import setup
 
 NAME = "exile"
 DESCRIPTION = "Replace a directory with a symlink to a copy of it."
-VERSION = "0.0.4"
+VERSION = "0.0.5"
 AUTHOR = "gulan"
 AUTHOR_EMAIL = "glen.wilder@gmail.com"
 
