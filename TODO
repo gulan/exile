@@ -5,6 +5,16 @@
 * tests
 * redesign with a fs model 
 * check for multiple links, which could happen after a dir copy
+* security
+* restructured-text check
+* inline doc standards
+* factor out pure routines
+* extension: export a regular file
+* bug: had to manully create .exile
+* bug: .exile has root as extra level of nesting (only on openbsd?)
+* pardon should remove empty archived project directories
+* guard against concurrent operations.
+* remove .exile search
 
 08/14/2016 Goals
 ----------------
@@ -13,3 +23,17 @@ Upgrade to a professional quality project with code on pypi.
 0.0.3
 -----
 Improve documentation language.
+
+0.0.4
+-----
+Add testsuite.
+
+Normal operation alters the file system, so I need to build and destroy testbeds.
+
+The general testing scheme for a test is
+
+    * setup a file tree
+    * do some sequence of exile and pardon commands
+    * check the result
+    * cleanup
+
