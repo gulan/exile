@@ -1,6 +1,6 @@
 *.pyc
 *~
-my.*
+my__*
 build
 dist
 2

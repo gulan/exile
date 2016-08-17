@@ -1,22 +1,26 @@
 #!/usr/bin/env python
 
+import ez_setup
+ez_setup.use_setuptools()
+
 import sys
-from distutils.core import setup
+# from distutils.core import setup
+from setuptools import setup, find_packages
 
 NAME = "exile"
 DESCRIPTION = "Replace a directory with a symlink to a copy of it."
-VERSION = "0.0.5"
+VERSION = "0.1.0"
 AUTHOR = "gulan"
 AUTHOR_EMAIL = "glen.wilder@gmail.com"
 
 
-if __name__ == "__main__":
-    setup(
-        name = NAME,
-        version = VERSION,
-        author = AUTHOR,
-        author_email = AUTHOR_EMAIL,
-        description = DESCRIPTION,
-        scripts = ["exile","pardon"])
-
-    sys.exit(0)
+setup(
+    name = NAME,
+    version = VERSION,
+    author = AUTHOR,
+    author_email = AUTHOR_EMAIL,
+    description = DESCRIPTION,
+    # packages = find_packages(exclude=['test']),
+    packages = ['test'],
+    test_suite = 'test.test_action',
+    scripts = ['exile', 'pardon', 'ez_setup.py'])
