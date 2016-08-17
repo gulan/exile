@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 
 NAME = "exile"
 DESCRIPTION = "Replace a directory with a symlink to a copy of it."
-VERSION = "0.1.2"
+VERSION = "0.1.3"
 AUTHOR = "gulan"
 AUTHOR_EMAIL = "glen.wilder@gmail.com"
 

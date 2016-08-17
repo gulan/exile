@@ -1,11 +1,10 @@
+from collections import namedtuple
 import os
 from os import path
-from collections import namedtuple
 import shutil
 import sys
 
-
-Status = namedtuple("Status","status rc errmsg")
+Status = namedtuple("Status", "status rc msg")
 
 def trim(name):
     if name.startswith('./'): 
@@ -26,10 +25,7 @@ def shadows(root, fullpath=False):
     project directory as exiled some directories."""
     def aux():
         for f in os.listdir(dot_exile(root)):
-            if fullpath:
-                yield path.join(dot_exile(root), f)
-            else:
-                yield f
+            (yield path.join(dot_exile(root), f)) if fullpath else (yield f)
     return list(aux())
 
 def folders(root, project, fullpath=False):
@@ -39,10 +35,7 @@ def folders(root, project, fullpath=False):
         # A project may have nothing exiled
         if path.exists(loc):
             for f in os.listdir(loc):
-                if fullpath:
-                    yield path.join(dot_exile(root), project, f)
-                else:
-                    yield f
+                (yield path.join(dot_exile(root), project, f)) if fullpath else (yield f)
     return list(aux())
 
 def candidates(root, project, fullpath=False):
@@ -55,10 +48,7 @@ def candidates(root, project, fullpath=False):
                 continue
             if not path.isdir(fp):
                 continue
-            if fullpath:
-                yield fp
-            else:
-                yield p
+            (yield fp) if fullpath else (yield p)
     return list(aux())
 
 def exile(args):
@@ -81,35 +71,37 @@ def exile(args):
             return Status(False, 17, 'source may not be a symbolic link')
         if not path.isdir(spath):
             return Status(False, 16, 'source must be a local directory')
-        return Status(True,0,'')
+        return Status(True, 0, '')
 
     check = check_source(source)
     if not check.status:
-        print >>sys.stderr,check.errmsg
+        print >>sys.stderr, check.msg
         return check.rc
 
     def find_exile():
         spath = os.getcwd()
         while spath != '/': # search towards fs root
-            location = path.join(spath,'.exile')
+            location = path.join(spath, '.exile')
             if path.exists(location):
-                return location # found
+                return Status(True, 0, location) # found
             spath = path.dirname(spath)
-        return '' # fail
+        return Status(False, 49, 'no .exile/ directory found')
 
-    exile_path = find_exile()
-    if not exile_path:
-        print >>sys.stderr,'no .exile/ directory found.'
-        return 49
+    find_result = find_exile()
+    if find_result.status:
+        exile_path = find_result.msg
+    else:
+        print >>sys.stderr, find_result.msg
+        return find_result.rc
 
     parent_name = path.basename(os.getcwd())
-    new_home = path.join(exile_path,parent_name)
+    new_home = path.join(exile_path, parent_name)
     if not path.exists(new_home):
         os.mkdir(new_home)
-    target = path.join(new_home,source)
+    target = path.join(new_home, source)
 
-    shutil.move(source,target)
-    os.symlink(target,source)
+    shutil.move(source, target)
+    os.symlink(target, source)
 
     return 0
 
@@ -131,17 +123,17 @@ def pardon(args):
         if linkname != path.basename(data):
             msg = 'linkname is not the basename form of the exiled directory'
             return Status(False, 39, msg)
-        return Status(True,0,'')
+        return Status(True, 0, '')
 
     check = check_linkname(linkname)
     if not check.status:
-        print >>sys.stderr,check.errmsg
+        print >>sys.stderr, check.msg
         return check.rc
         
     exiled_folder_path = trim(os.readlink(linkname))
     
     os.remove(linkname)
-    shutil.move(exiled_folder_path,linkname)
+    shutil.move(exiled_folder_path, linkname)
 
     # remove exiled project folder if empty
     project_path = path.dirname(exiled_folder_path)

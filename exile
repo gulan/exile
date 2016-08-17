@@ -45,7 +45,7 @@ import sys
 
 if __name__ == '__main__':
     p = argparse.ArgumentParser(description='Exile the named directory')
-    p.add_argument('source',help='directory to exile')
+    p.add_argument('source', help='directory to exile')
     p.set_defaults(func=exiler.exile)
     args = p.parse_args()
     sys.exit(args.func(args))
