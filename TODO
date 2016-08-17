@@ -12,7 +12,6 @@
 * extension: export a regular file
 * bug: had to manully create .exile
 * bug: .exile has root as extra level of nesting (only on openbsd?)
-* pardon should remove empty archived project directories
 * guard against concurrent operations.
 * remove .exile search
 * add license
@@ -50,6 +49,13 @@ raises an error in the testsuite.
 0.1.0
 -----
 Convert setup.py from distutils to setuptools
+
+0.1.1
+-----
+Use path.XXX instead of os.path.XXX
+
+0.2.0
+-----
 
 
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+from os import path
 import shutil
 import sys
 import tempfile
@@ -53,7 +54,7 @@ def make_testbed(with_exile=True):
             
     root = tempfile.mkdtemp(prefix='exile_root_')
     if with_exile:
-        os.mkdir(os.path.join(root, '.exile'))
+        os.mkdir(path.join(root, '.exile'))
     projects = []
     p_contents = []
     for i in range(5):
@@ -72,35 +73,35 @@ def check_consistent(root):
     archive. Every exile and pardon command should preserve the
     invariants checked here."""
 
-    if os.path.islink(root) or not os.path.isdir(root):
+    if path.islink(root) or not path.isdir(root):
         raise Check("projects root %s is not a directory" % root)
 
-    dot_exile = os.path.join(root, '.exile')
-    if not os.path.lexists(dot_exile):
+    dot_exile = path.join(root, '.exile')
+    if not path.lexists(dot_exile):
         raise Check("projects root %s has no .exile" % root)
-    if os.path.islink(dot_exile) or not os.path.isdir(dot_exile):
+    if path.islink(dot_exile) or not path.isdir(dot_exile):
         raise Check(".exile in projects root %s is not a directory" % root)
 
     def check_link_target(project_name, folder_name):
-        target = os.path.join(dot_exile, project_name, folder_name)
-        if not os.path.lexists(target):
+        target = path.join(dot_exile, project_name, folder_name)
+        if not path.lexists(target):
             raise Check("archived folder %s does not exist" % target)
-        if os.path.islink(target):
+        if path.islink(target):
             raise Check("archived folder %s is itself a symlink" % target)
-        if not os.path.isdir(target):
+        if not path.isdir(target):
             raise Check("archived folder %s is not a directory" % target)
     
     def check_link_source(project_name, folder_name):
-        target = os.path.join(dot_exile, project_name, folder_name)
-        source = os.path.join(root, project_name, folder_name)
-        if not os.path.islink(source):
+        target = path.join(dot_exile, project_name, folder_name)
+        source = path.join(root, project_name, folder_name)
+        if not path.islink(source):
             raise Check("source %s is not a symlink" % source)
         if os.readlink(source) != target:
             msg = "source %s does not point to target %s"
             raise Check(msg % (source, target))
     
     for project_name in os.listdir(dot_exile):
-        full_archived_project_path = os.path.join(dot_exile, project_name)
+        full_archived_project_path = path.join(dot_exile, project_name)
         folders = os.listdir(full_archived_project_path)
         if not folders:
             msg = ".exile project directory %s has no folders"
@@ -124,7 +125,7 @@ def projects(root):
     return [p for p in os.listdir(root) if p != '.exile']
 
 def dot_exile(root):
-    return os.path.join(root, '.exile')
+    return path.join(root, '.exile')
 
 def shadows(root, fullpath=False):
     """A shadow directory has the same name as a project
@@ -133,7 +134,7 @@ def shadows(root, fullpath=False):
     def aux():
         for f in os.listdir(dot_exile(root)):
             if fullpath:
-                yield os.path.join(dot_exile(root), f)
+                yield path.join(dot_exile(root), f)
             else:
                 yield f
     return list(aux())
@@ -141,12 +142,12 @@ def shadows(root, fullpath=False):
 def folders(root, project, fullpath=False):
     """The exiled target directories for this project"""
     def aux():
-        loc = os.path.join(dot_exile(root), project)
+        loc = path.join(dot_exile(root), project)
         # A project may have nothing exiled
-        if os.path.exists(loc):
+        if path.exists(loc):
             for f in os.listdir(loc):
                 if fullpath:
-                    yield os.path.join(dot_exile(root), project, f)
+                    yield path.join(dot_exile(root), project, f)
                 else:
                     yield f
     return list(aux())
@@ -155,11 +156,11 @@ def candidates(root, project, fullpath=False):
     """Return a list of a project's subdirectories. Any of these could
     be made an exile."""
     def aux():
-        for p in os.listdir(os.path.join(root, project)):
-            fp = os.path.join(root, project, p)
-            if os.path.islink(fp):
+        for p in os.listdir(path.join(root, project)):
+            fp = path.join(root, project, p)
+            if path.islink(fp):
                 continue
-            if not os.path.isdir(fp):
+            if not path.isdir(fp):
                 continue
             if fullpath:
                 yield fp

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+from os import path
 import shutil
 import subprocess
 import tempfile
@@ -17,8 +18,8 @@ class TestAction(unittest.TestCase):
     def setUp(self):
         self.save = os.getcwd()
         self.root = exile_utils.make_testbed()
-        self.exile_script = os.path.abspath('./exile')
-        self.pardon_script = os.path.abspath('./pardon')
+        self.exile_script = path.abspath('./exile')
+        self.pardon_script = path.abspath('./pardon')
         
     def tearDown(self):
         shutil.rmtree(self.root)
@@ -30,7 +31,7 @@ class TestAction(unittest.TestCase):
         p = ps[1] # choose a project
         cs = exile_utils.candidates(r, p)
         c = cs[1] # choose a candidate
-        os.chdir(os.path.join(r, p)) # exile is run within a project dir
+        os.chdir(path.join(r, p)) # exile is run within a project dir
         rc = subprocess.call([self.exile_script, c])
         self.assertEqual(rc, 0)
         # verify the candidate subdir is now exiled:
@@ -46,7 +47,7 @@ class TestAction(unittest.TestCase):
         cs = exile_utils.candidates(r, p)
         c = cs[1] # choose a candidate
 
-        os.chdir(os.path.join(r, p)) # exile is run within a project dir
+        os.chdir(path.join(r, p)) # exile is run within a project dir
         rc = subprocess.call([self.exile_script, c])
         self.assertEqual(rc, 0)
         # verify the candidate subdir is now exiled:
