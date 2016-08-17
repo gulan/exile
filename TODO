@@ -54,6 +54,10 @@ Convert setup.py from distutils to setuptools
 -----
 Use path.XXX instead of os.path.XXX
 
+0.1.2
+-----
+Migrate code to a package
+
 0.2.0
 -----
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import exiler
 import os
 from os import path
 import shutil
@@ -110,7 +111,6 @@ def check_consistent(root):
             check_link_target(project_name, folder_name)
             check_link_source(project_name, folder_name)
 
-
 def check(root):
     'functional wrapper'
     try:
@@ -119,54 +119,6 @@ def check(root):
     except Check, msg:
         return (False, msg)
 
-# The functions below assume that check(root) is true.
-
-def projects(root):
-    return [p for p in os.listdir(root) if p != '.exile']
-
-def dot_exile(root):
-    return path.join(root, '.exile')
-
-def shadows(root, fullpath=False):
-    """A shadow directory has the same name as a project
-    directory. The shadow directory exists only if the original
-    project directory as exiled some directories."""
-    def aux():
-        for f in os.listdir(dot_exile(root)):
-            if fullpath:
-                yield path.join(dot_exile(root), f)
-            else:
-                yield f
-    return list(aux())
-
-def folders(root, project, fullpath=False):
-    """The exiled target directories for this project"""
-    def aux():
-        loc = path.join(dot_exile(root), project)
-        # A project may have nothing exiled
-        if path.exists(loc):
-            for f in os.listdir(loc):
-                if fullpath:
-                    yield path.join(dot_exile(root), project, f)
-                else:
-                    yield f
-    return list(aux())
-
-def candidates(root, project, fullpath=False):
-    """Return a list of a project's subdirectories. Any of these could
-    be made an exile."""
-    def aux():
-        for p in os.listdir(path.join(root, project)):
-            fp = path.join(root, project, p)
-            if path.islink(fp):
-                continue
-            if not path.isdir(fp):
-                continue
-            if fullpath:
-                yield fp
-            else:
-                yield p
-    return list(aux())
 
 """
 exile_utils.py make
@@ -195,11 +147,11 @@ if __name__ == '__main__':
             sys.exit(1)
     elif 'dot' in sys.argv:
         root = sys.argv[sys.argv.index('dot') + 1]
-        print dot_exile(root)
+        print exiler.dot_exile(root)
         sys.exit(0)
     elif 'projects' in sys.argv:
         root = sys.argv[sys.argv.index('projects') + 1]
-        for p in projects(root):
+        for p in exiler.projects(root):
             print p
         sys.exit(0)
     elif 'shadows' in sys.argv:
@@ -208,7 +160,7 @@ if __name__ == '__main__':
             option = (sys.argv[sys.argv.index('shadows') + 2] == '-l')
         except IndexError:
             option = False
-        for s in shadows(root, option):
+        for s in exiler.shadows(root, option):
             print s
         sys.exit(0)
     elif 'folders' in sys.argv:
@@ -218,7 +170,7 @@ if __name__ == '__main__':
             option = (sys.argv[sys.argv.index('folders') + 3] == '-l')
         except IndexError:
             option = False
-        for s in folders(root, project, option):
+        for s in exiler.folders(root, project, option):
             print s
         sys.exit(0)
     elif 'candidates' in sys.argv:
@@ -228,7 +180,7 @@ if __name__ == '__main__':
             option = (sys.argv[sys.argv.index('candidates') + 3] == '-l')
         except IndexError:
             option = False
-        for s in candidates(root, project, option):
+        for s in exiler.candidates(root, project, option):
             print s
         sys.exit(0)
     else:

@@ -40,77 +40,13 @@ directory is again local, and there is no longer an entry
 """
 
 import argparse
-from collections import namedtuple
-import os
-from os import path
-import shutil
+import exiler
 import sys
-
-Status = namedtuple("Status","status rc errmsg")
-
-def trim(name):
-    if name.startswith('./'): 
-        name = name[2:]
-    if name.endswith('/'):
-        name = name[:-1]
-    return name
-
-def exile(args):
-    """
-    * check args.source is a local directory
-    * find ancestor directory .exile
-    * resolve args.source's parent dir to a simple name
-    * ensure that the dir .exile/$dir exists
-    * move args.source to .exile/$dir/
-    * symlink .exile/$dir/args.source to args.source
-    """
-    source = trim(args.source)
-
-    def check_source(spath):
-        if path.sep in spath:
-            return Status(False, 19, 'source must be a local directory')
-        if not path.exists(spath):
-            return Status(False, 18, 'source not found')
-        if path.islink(spath):
-            return Status(False, 17, 'source may not be a symbolic link')
-        if not path.isdir(spath):
-            return Status(False, 16, 'source must be a local directory')
-        return Status(True,0,'')
-
-    check = check_source(source)
-    if not check.status:
-        print >>sys.stderr,check.errmsg
-        return check.rc
-
-    def find_exile():
-        spath = os.getcwd()
-        while spath != '/': # search towards fs root
-            location = path.join(spath,'.exile')
-            if path.exists(location):
-                return location # found
-            spath = path.dirname(spath)
-        return '' # fail
-
-    exile_path = find_exile()
-    if not exile_path:
-        print >>sys.stderr,'no .exile/ directory found.'
-        return 49
-
-    parent_name = path.basename(os.getcwd())
-    new_home = path.join(exile_path,parent_name)
-    if not path.exists(new_home):
-        os.mkdir(new_home)
-    target = path.join(new_home,source)
-
-    shutil.move(source,target)
-    os.symlink(target,source)
-
-    return 0
 
 if __name__ == '__main__':
     p = argparse.ArgumentParser(description='Exile the named directory')
     p.add_argument('source',help='directory to exile')
-    p.set_defaults(func=exile)
+    p.set_defaults(func=exiler.exile)
     args = p.parse_args()
     sys.exit(args.func(args))
 
