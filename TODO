@@ -12,7 +12,6 @@
 * guard against concurrent operations.
 * add license
 * convert scripts to subcommands. use shell alias for backwards compatibility
-* fix no_root traceback
 * add filetree compare utility to tests
 
 08/14/2016 Goals
@@ -100,4 +99,7 @@ exile.
 -----
 Improve testing code
 
+0.2.4
+-----
+Update docs
 

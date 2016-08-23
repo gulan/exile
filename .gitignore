@@ -4,6 +4,6 @@ my__*
 build/
 dist/
 2/
-setuptools-25.2.0-py2.7.egg
-setuptools-25.2.0.zip
+setuptools-*.egg
+setuptools-*.zip
 exile.egg-info/

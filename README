@@ -36,8 +36,8 @@ projects, excepting `.exile` itself::
 
 Say I want to exile directory `~/projects/a-proj/PY27`::
 
-  cd ~/projects/
-  exile PY27
+  cd ~/projects/a-proj
+  occ exile -r ~/projects PY27
 
 The result is::
 
@@ -50,15 +50,29 @@ The result is::
            b-proj/
            c-proj/
 
-The exile command will look for the first parent directory that
-contains a .exile sub-directory. The command will create the
-.exile/a-proj/ directory, if it does not exist. It will then move the
-PY27 directory and make a symlink to it.
+The -r option gives the projects root directory. This value can also
+be given as an environment variable::
+
+    export EXILER_ROOT='~/projects'
+
+With this setting, I can just do::
+
+  occ exile PY27
+
+The exile subcommand will create the .exile/a-proj/ directory, if it
+does not exist. It will then move the PY27 directory there and make a
+symlink in its original location to point to it.
+
+Currently, only immediate subdirectories of a project may be
+exiled. There are certainly times when I would like to exile a deeper
+subdirectory by itself. I also may wish to exile a regular file. I
+plan to add these features to a future release, after a bout of
+careful design.
 
 The 'pardon' command is the logical inverse of exile. It will move the
 exile directory back to its original location. The sequence::
 
-  exile PY27 ; pardon PY27
+  occ exile PY27 ; occ pardon PY27
 
-has no net effect, except it may leave an empty `.exile/a-proj`
-directory that did not previously exist. That seems harmless.
+has no net effect.
+
