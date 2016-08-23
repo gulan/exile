@@ -149,8 +149,10 @@ def exile(args):
     if path.sep in args.source:
         raise RunError(19, 'source must be a local directory')
     
-    if not path.isdir(args.root_path):
+    if not args.root_path:
         raise RunError(9, 'no root_path to projects directory given')
+    if not path.isdir(args.root_path):
+        raise RunError(10, 'root_path %s is not a diectory' % args.root_path)
 
     project_path = path.join(args.root_path, args.project)
     if not path.isdir(project_path):
@@ -178,8 +180,10 @@ def exile(args):
 def pardon(args):
     "Restore the exiled directory."
     
-    if not path.isdir(args.root_path):
+    if not args.root_path:
         raise RunError(9, 'no root_path to projects directory given')
+    if not path.isdir(args.root_path):
+        raise RunError(10, 'root_path %s is not a diectory' % args.root_path)
 
     dot_exile_path = path.join(args.root_path, dot_exile)
     if not path.isdir(dot_exile_path):

@@ -1,21 +1,19 @@
-* exile nested directories
+* extension: exile nested directories
 * safe move
 * exile a b c
 * option to show actions, but do not perform
-* tests
 * redesign with a fs model 
 * check for multiple links, which could happen after a dir copy
 * security
 * restructured-text check
 * inline doc standards
-* factor out pure routines
 * extension: export a regular file
-* bug: had to manully create .exile
 * bug: .exile has root as extra level of nesting (only on openbsd?)
 * guard against concurrent operations.
-* remove .exile search
 * add license
 * convert scripts to subcommands. use shell alias for backwards compatibility
+* fix no_root traceback
+* add filetree compare utility to tests
 
 08/14/2016 Goals
 ----------------
@@ -97,4 +95,9 @@ Rename files
 After thinking about it too long, I renamed the exiler command to
 'occ', which means nothing. I also renamed the package from exiler to
 exile.
+
+0.2.3
+-----
+Improve testing code
+
 
