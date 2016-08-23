@@ -8,19 +8,15 @@ import tempfile
 import unittest
 import exile_utils
 import exiler
-
-"""
-exile -h
-exile proj
-"""
+import sys
 
 class TestAction(unittest.TestCase):
 
     def setUp(self):
         self.save = os.getcwd()
         self.root = exile_utils.make_testbed()
-        self.exile_script = path.abspath('./exile')
-        self.pardon_script = path.abspath('./pardon')
+        self.exile_script = path.abspath('./exiling')
+        self.pardon_script = path.abspath('./exiling')
         
     def tearDown(self):
         shutil.rmtree(self.root)
@@ -32,8 +28,12 @@ class TestAction(unittest.TestCase):
         p = ps[1] # choose a project
         cs = exiler.candidates(r, p)
         c = cs[1] # choose a candidate
-        os.chdir(path.join(r, p)) # exile is run within a project dir
-        rc = subprocess.call([self.exile_script, c])
+        # os.chdir(path.join(r, p)) # exile is run within a project dir
+
+        cmdl = [self.exile_script, 'exile', '-r', self.root, '-p', p, c]
+        # print >>sys.stderr, '> %s' % ' '.join(cmdl)
+        rc = subprocess.call(cmdl)
+
         self.assertEqual(rc, 0)
         # verify the candidate subdir is now exiled:
         fs = exiler.folders(r, p)
@@ -48,8 +48,10 @@ class TestAction(unittest.TestCase):
         cs = exiler.candidates(r, p)
         c = cs[1] # choose a candidate
 
-        os.chdir(path.join(r, p)) # exile is run within a project dir
-        rc = subprocess.call([self.exile_script, c])
+        # os.chdir(path.join(r, p)) # exile is run within a project dir
+        cmdl = [self.exile_script, 'exile', '-r', self.root, '-p', p, c]
+        rc = subprocess.call(cmdl)
+        
         self.assertEqual(rc, 0)
         # verify the candidate subdir is now exiled:
         self.assertEqual(exile_utils.check(r)[0], True)
@@ -57,8 +59,10 @@ class TestAction(unittest.TestCase):
         self.assertEqual(c in fs, True)
         self.assertEqual(c not in exiler.candidates(r, p), True)
 
-        rc = subprocess.call([self.pardon_script, c]) # undo exile
+        cmdl = [self.exile_script, 'pardon', '-r', self.root, '-p', p, c]
+        rc = subprocess.call(cmdl) # undo exile
         self.assertEqual(rc, 0)
+
         # print "project>", p
         # subprocess.call(['tree', exiler.dot_exile(r)])
         ck = exile_utils.check(r)

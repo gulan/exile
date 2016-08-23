@@ -1,6 +1,9 @@
 *.pyc
 *~
 my__*
-build
-dist
-2
+build/
+dist/
+2/
+setuptools-25.2.0-py2.7.egg
+setuptools-25.2.0.zip
+exile.egg-info/

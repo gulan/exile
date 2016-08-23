@@ -64,7 +64,14 @@ Code golf
 
 0.2.0
 -----
+Convert invocation to use shell subcommands.
 
+Where before I would do
 
+    $ pardon abc
+
+now I do
+
+    $ exiler pardon abc
 
 

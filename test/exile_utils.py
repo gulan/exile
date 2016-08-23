@@ -58,7 +58,7 @@ def make_testbed(with_exile=True):
         os.mkdir(path.join(root, '.exile'))
     projects = []
     p_contents = []
-    for i in range(5):
+    for i in range(3):
         d = tempfile.mkdtemp(prefix='proj_', dir=root)
         projects.append(d)
         subdirs = []
