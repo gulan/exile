@@ -74,4 +74,19 @@ now I do
 
     $ exiler pardon abc
 
+0.2.X
+-----
+Clean-up.
+
+I have made a mess. Why?
+
+* no abstract design and no method
+* argparse is verbose and opaque
+* With unittest, it is hard to prevent code duplication and still be readable
+* file organization and naming is strange
+* setuptools has a lot of magic and cruft
+
+0.2.1
+-----
+Factor common arg parsing
 

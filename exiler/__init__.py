@@ -215,28 +215,26 @@ def pardon(args):
     return 0
 
 def parse_commandline():
-    parser = argparse.ArgumentParser(description='Exiler commands')
-    subparsers = parser.add_subparsers()
-    
-    # # ---  projects  ---
-    # p = subparsers.add_parser(
-    #     'projects',
-    #     help='list project found from pwd')
-    # p.set_defaults(func=projects_cmd)
-    
-    # ---  exile  ---
-    p = subparsers.add_parser(
-        'exile',
-        help='Move source to .exile/proj/source') 
-    p.add_argument(
+    # ---  parent parser for common args  ---
+    pp = argparse.ArgumentParser(add_help=False)
+    pp.add_argument(
         '-r', '--root_path',
         default = os.environ.get('EXILER_ROOT', None),
         help = 'Fullpath to all projects root.')
-    p.add_argument(
+    pp.add_argument(
         '-p', '--project',
         default = path.basename(os.getcwd()),
         help = ('Simple name of a project directory that is seen in the projects root.'
               + ' Defaults to the pwd.'))
+    
+    parser = argparse.ArgumentParser(description='Exiler commands')
+    subparsers = parser.add_subparsers()
+    
+    # ---  exile  ---
+    p = subparsers.add_parser(
+        'exile',
+        parents = [pp],
+        help='Move source to .exile/proj/source') 
     p.add_argument(
         'source',
         help='Simple name of subdir with the project')
@@ -245,23 +243,21 @@ def parse_commandline():
     # ---  pardon  ---
     p = subparsers.add_parser(
         'pardon',
+        parents = [pp],
         help='Move target of linkname back to pwd')
-    p.add_argument(
-        '-r', '--root_path',
-        default = os.environ.get('EXILER_ROOT', None),
-        help = 'Fullpath to all projects root.')
-    p.add_argument(
-        '-p', '--project',
-        default = path.basename(os.getcwd()),
-        help=('Simple name of a project directory that is seen in the projects root.'
-              + ' Defaults to the pwd.'))
     p.add_argument(
         'source',
         help='Simple name of symlink within the pwd that points to an exiled subdir')
     p.set_defaults(func=pardon)
-
+    
     return parser.parse_args(sys.argv[1:])
 
+    # # ---  projects  ---
+    # p = subparsers.add_parser(
+    #     'projects',
+    #     help='list project found from pwd')
+    # p.set_defaults(func=projects_cmd)
+    
 def main():
     try:
         args = parse_commandline()
