@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-import exiler
+import exile
 import sys
 
 if __name__ == '__main__':
-    sys.exit(exiler.main())
+    sys.exit(exile.main())
 
     

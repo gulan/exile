@@ -147,11 +147,11 @@ if __name__ == '__main__':
             sys.exit(1)
     elif 'dot' in sys.argv:
         root = sys.argv[sys.argv.index('dot') + 1]
-        print exiler.dot_exile(root)
+        print exile.dot_exile(root)
         sys.exit(0)
     elif 'projects' in sys.argv:
         root = sys.argv[sys.argv.index('projects') + 1]
-        for p in exiler.projects(root):
+        for p in exile.projects(root):
             print p
         sys.exit(0)
     elif 'shadows' in sys.argv:
@@ -160,7 +160,7 @@ if __name__ == '__main__':
             option = (sys.argv[sys.argv.index('shadows') + 2] == '-l')
         except IndexError:
             option = False
-        for s in exiler.shadows(root, option):
+        for s in exile.shadows(root, option):
             print s
         sys.exit(0)
     elif 'folders' in sys.argv:
@@ -170,7 +170,7 @@ if __name__ == '__main__':
             option = (sys.argv[sys.argv.index('folders') + 3] == '-l')
         except IndexError:
             option = False
-        for s in exiler.folders(root, project, option):
+        for s in exile.folders(root, project, option):
             print s
         sys.exit(0)
     elif 'candidates' in sys.argv:
@@ -180,7 +180,7 @@ if __name__ == '__main__':
             option = (sys.argv[sys.argv.index('candidates') + 3] == '-l')
         except IndexError:
             option = False
-        for s in exiler.candidates(root, project, option):
+        for s in exile.candidates(root, project, option):
             print s
         sys.exit(0)
     else:

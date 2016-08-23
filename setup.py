@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 
 NAME = "exile"
 DESCRIPTION = "Replace a directory with a symlink to a copy of it."
-VERSION = "0.2.1"
+VERSION = "0.2.2"
 AUTHOR = "gulan"
 AUTHOR_EMAIL = "glen.wilder@gmail.com"
 
@@ -18,6 +18,6 @@ setup(
     author = AUTHOR,
     author_email = AUTHOR_EMAIL,
     description = DESCRIPTION,
-    packages = ['exiler', 'test'],
+    packages = ['exile', 'test'],
     test_suite = 'test.test_action',
-    scripts = ['exiling', 'ez_setup.py'])
+    scripts = ['occ', 'ez_setup.py'])

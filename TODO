@@ -90,3 +90,11 @@ I have made a mess. Why?
 -----
 Factor common arg parsing
 
+0.2.2
+-----
+Rename files
+
+After thinking about it too long, I renamed the exiler command to
+'occ', which means nothing. I also renamed the package from exiler to
+exile.
+
